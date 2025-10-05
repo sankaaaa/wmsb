@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
+import Navbar from "../components/Navbar";
 
 const StockPage = () => {
     const [items, setItems] = useState([]);
@@ -11,10 +12,31 @@ const StockPage = () => {
     }, []);
 
     return (
-        <div className="p-4">
-            <h1>📦 Склад (Storage)</h1>
-            <div className="p-6 bg-gray-100 min-h-screen">
-                <h1 className="text-3xl font-bold text-blue-500">Склад</h1>
+        <div>
+            <Navbar/>
+            <div className="h-20 bg-[#981208] flex items-center pl-[60px] pr-[20px]">
+                <div className="flex space-x-40">
+                    <label className="flex items-center space-x-2 text-white text-[20px] font-bold font-['Craftwork_Grotesk'] cursor-pointer">
+                        <input type="checkbox" className="w-5 h-5 accent-white" />
+                        <span>Alcohol drinks</span>
+                    </label>
+
+                    <label className="flex items-center space-x-2 text-white text-[20px] font-bold font-['Craftwork_Grotesk'] cursor-pointer">
+                        <input type="checkbox" className="w-5 h-5 accent-white" />
+                        <span>Soft drinks</span>
+                    </label>
+
+                    <label className="flex items-center space-x-2 text-white text-[20px] font-bold font-['Craftwork_Grotesk'] cursor-pointer">
+                        <input type="checkbox" className="w-5 h-5 accent-white" />
+                        <span>Stuff</span>
+                    </label>
+                </div>
+
+                <input
+                    type="text"
+                    placeholder="Search"
+                    className="ml-auto mr-[80px] px-4 py-2 rounded-md text-black text-[16px] focus:outline-none"
+                />
             </div>
 
             <ul>
