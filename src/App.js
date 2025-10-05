@@ -4,6 +4,7 @@ import {BrowserRouter, Routes, Route, Link, Navigate, useLocation} from 'react-r
 
 import StockPage from "./pages/StockPage";
 
+
 function App() {
     return (
         <BrowserRouter>

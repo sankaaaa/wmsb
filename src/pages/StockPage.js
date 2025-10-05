@@ -4,7 +4,6 @@ const StockPage = () => {
     const [items, setItems] = useState([]);
 
     useEffect(() => {
-        // Отримати дані з бекенду
         fetch("http://localhost:5000/api/items")
             .then((res) => res.json())
             .then((data) => setItems(data))
@@ -14,6 +13,10 @@ const StockPage = () => {
     return (
         <div className="p-4">
             <h1>📦 Склад (Storage)</h1>
+            <div className="p-6 bg-gray-100 min-h-screen">
+                <h1 className="text-3xl font-bold text-blue-500">Склад</h1>
+            </div>
+
             <ul>
                 {items.map((item) => (
                     <li key={item._id}>
