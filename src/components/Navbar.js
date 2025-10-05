@@ -18,7 +18,7 @@ const Navbar = () => {
                     WMSB
                 </div>
             </div>
-            <div className="h-20 bg-[#660B05] flex items-center justify-center space-x-40">
+            <div className="h-20 bg-[#660B05] flex items-center justify-center space-x-[300px]">
                 {links.map((link) => {
                     const isActive = location.pathname === link.path;
                     return (
