@@ -9,6 +9,4 @@ const itemSchema = new mongoose.Schema({
     photo: String
 });
 
-const Item = mongoose.model("Item", itemSchema, "storage");
-
-module.exports = Item;
+module.exports = mongoose.model("Item", itemSchema, "storage");
