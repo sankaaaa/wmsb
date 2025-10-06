@@ -4,7 +4,9 @@ const itemSchema = new mongoose.Schema({
     name: String,
     quantity: Number,
     price: Number,
-    description: String
+    description: String,
+    type: String,
+    photo: String
 });
 
 const Item = mongoose.model("Item", itemSchema, "storage");
