@@ -264,7 +264,7 @@ const StockPage = () => {
                                     }}
                                     className="px-4 py-2 bg-[#981208] text-white rounded-md"
                                 >
-                                    Submit order
+                                    Create order
                                 </button>
                             )}
                         </div>
