@@ -5,6 +5,11 @@ import Navbar from "../components/Navbar";
 const CreateOrderPage = () => {
     const navigate = useNavigate();
     const [cart, setCart] = React.useState([]);
+    const [formData, setFormData] = React.useState({
+        customerName: "",
+        customerEmail: "",
+        providerEmail: "",
+    });
 
     React.useEffect(() => {
         const savedCart = localStorage.getItem("cart");
@@ -13,13 +18,31 @@ const CreateOrderPage = () => {
         }
     }, []);
 
+    const handleChange = (e) => {
+        setFormData({...formData, [e.target.name]: e.target.value});
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        if (cart.length === 0) {
+            alert("Your cart is empty!");
+            return;
+        }
+
+        const totalPrice = cart.reduce(
+            (sum, item) => sum + item.price * item.quantity,
+            0
+        );
+
         fetch("http://localhost:5000/api/orders", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ products: cart }),
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                ...formData,
+                products: cart,
+                totalPrice,
+            }),
         })
             .then((res) => res.json())
             .then((data) => {
@@ -30,7 +53,6 @@ const CreateOrderPage = () => {
             })
             .catch((err) => console.error("Order creation failed:", err));
     };
-
 
     return (
         <div>
@@ -55,17 +77,22 @@ const CreateOrderPage = () => {
                                     >
                                         <span>{item.name}</span>
                                         <span>
-                    {item.quantity} × €{item.price} ={" "}
-                                            <strong>€{(item.price * item.quantity).toFixed(2)}</strong>
-                  </span>
+                      {item.quantity} × €{item.price} ={" "}
+                                            <strong>
+                        €{(item.price * item.quantity).toFixed(2)}
+                      </strong>
+                    </span>
                                     </li>
                                 ))}
                             </ul>
 
                             <div className="mb-4">
-                                <label className="block font-semibold mb-1">Your name</label>
+                                <label className="block font-semibold mb-1">Your Name</label>
                                 <input
                                     type="text"
+                                    name="customerName"
+                                    value={formData.customerName}
+                                    onChange={handleChange}
                                     required
                                     className="w-full border rounded-md px-3 py-2"
                                     placeholder="Enter your name"
@@ -73,12 +100,28 @@ const CreateOrderPage = () => {
                             </div>
 
                             <div className="mb-4">
-                                <label className="block font-semibold mb-1">Delivery address</label>
+                                <label className="block font-semibold mb-1">Your Email</label>
                                 <input
-                                    type="text"
+                                    type="email"
+                                    name="customerEmail"
+                                    value={formData.customerEmail}
+                                    onChange={handleChange}
                                     required
                                     className="w-full border rounded-md px-3 py-2"
-                                    placeholder="Enter your address"
+                                    placeholder="Enter your email"
+                                />
+                            </div>
+
+                            <div className="mb-4">
+                                <label className="block font-semibold mb-1">Provider Email</label>
+                                <input
+                                    type="email"
+                                    name="providerEmail"
+                                    value={formData.providerEmail}
+                                    onChange={handleChange}
+                                    required
+                                    className="w-full border rounded-md px-3 py-2"
+                                    placeholder="Enter provider email"
                                 />
                             </div>
 
