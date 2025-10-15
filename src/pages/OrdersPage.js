@@ -57,6 +57,9 @@ const OrdersPage = () => {
                                 <p className="text-sm text-gray-700">
                                     <strong>Provider:</strong> {order.providerEmail}
                                 </p>
+                                <p className="text-sm text-gray-700">
+                                    <strong>Comment:</strong> {order.comment}
+                                </p>
 
                                 <div className="mt-2">
                                     <strong className="text-gray-800">Items:</strong>

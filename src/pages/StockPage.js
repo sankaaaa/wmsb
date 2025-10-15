@@ -147,8 +147,8 @@ const StockPage = () => {
                 </div>
             </div>
 
-            <div className="flex justify-center bg-gray-100">
-                <ul className="space-y-2 mt-4 min-w-[1300px]">
+            <div className="flex justify-center min-h-screen bg-gray-100">
+                <ul className="space-y-2 mt-4 mb-4 min-w-[1300px]">
                     {filteredItems.map((item) => (
                         <li
                             key={item._id}

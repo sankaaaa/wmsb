@@ -124,7 +124,16 @@ const CreateOrderPage = () => {
                                     placeholder="Enter provider email"
                                 />
                             </div>
-
+                            <div className="mb-4">
+                                <label className="block font-semibold mb-1">Comment</label>
+                                <textarea
+                                    name="comment"
+                                    value={formData.comment || ""}
+                                    onChange={handleChange}
+                                    className="w-full border rounded-md px-3 py-2"
+                                    placeholder="Add a comment (optional)"
+                                />
+                            </div>
                             <div className="text-right">
                                 <button
                                     type="submit"
