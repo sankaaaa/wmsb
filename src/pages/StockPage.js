@@ -147,49 +147,51 @@ const StockPage = () => {
                 </div>
             </div>
 
-            <ul className="space-y-2 mt-4">
-                {filteredItems.map((item) => (
-                    <li
-                        key={item._id}
-                        className="pl-[60px] flex items-center justify-between bg-gray-200 p-4 rounded-md"
-                    >
-                        <div className="flex items-center gap-4 flex-1 min-w-0">
-                            <div
-                                className="w-[80px] h-[80px] bg-white flex items-center justify-center overflow-hidden rounded-md">
-                                {item.photo ? (
-                                    <img src={item.photo} alt={item.name} className="object-cover w-full h-full"/>
-                                ) : (
-                                    <span className="text-gray-500 text-xs">No image</span>
-                                )}
-                            </div>
-
-                            <div className="break-words">
-                                <h3 className="font-bold text-[20px] truncate">{item.name}</h3>
-                                <p className="text-sm text-gray-700 truncate">{item.description}</p>
-                            </div>
-                        </div>
-
-                        <div className="w-[100px] flex-shrink-0 text-center mr-[50px]">
-                            <span className="font-semibold">€{item.price}</span>
-                        </div>
-
-                        <div className="w-[100px] flex-shrink-0 text-center mr-[50px]">
-              <span
-                  className={`font-semibold ${item.quantity < 20 ? "text-red-600 font-bold" : "text-gray-800"}`}
-              >
-                Amount: {item.quantity}
-              </span>
-                        </div>
-
-                        <button
-                            onClick={() => handleAddToCart(item)}
-                            className="mr-[50px] bg-[#660B05] text-white px-4 py-2 rounded-md hover:bg-red-700"
+            <div className="flex justify-center bg-gray-100">
+                <ul className="space-y-2 mt-4 min-w-[1300px]">
+                    {filteredItems.map((item) => (
+                        <li
+                            key={item._id}
+                            className="pl-[40px] flex items-center justify-between bg-white border border-gray-300 p-4 rounded-md"
                         >
-                            Add to order
-                        </button>
-                    </li>
-                ))}
-            </ul>
+                            <div className="flex items-center gap-4 flex-1 min-w-0">
+                                <div
+                                    className="w-[90px] h-[90px] bg-white flex items-center justify-center overflow-hidden rounded-md">
+                                    {item.photo ? (
+                                        <img src={item.photo} alt={item.name} className="object-cover w-full h-full"/>
+                                    ) : (
+                                        <span className="text-gray-500 text-xs">No image</span>
+                                    )}
+                                </div>
+
+                                <div className="break-words">
+                                    <h3 className="font-bold text-[20px] truncate">{item.name}</h3>
+                                    <p className="text-sm text-gray-700 truncate">{item.description}</p>
+                                </div>
+                            </div>
+
+                            <div className="w-[100px] flex-shrink-0 text-center mr-[50px]">
+                                <span className="font-semibold">€{item.price}</span>
+                            </div>
+
+                            <div className="w-[100px] flex-shrink-0 text-center mr-[50px]">
+                    <span
+                        className={`font-semibold ${item.quantity < 20 ? "text-red-600 font-bold" : "text-gray-800"}`}
+                    >
+                        Amount: {item.quantity}
+                    </span>
+                            </div>
+
+                            <button
+                                onClick={() => handleAddToCart(item)}
+                                className="mr-[50px] bg-[#660B05] text-white px-4 py-2 rounded-md hover:bg-red-700"
+                            >
+                                Add to order
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            </div>
 
             {showQuantityPopup && selectedItem && (
                 <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
