@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
 import Navbar from "../components/Navbar";
 
 const StockPage = () => {
     const [items, setItems] = useState([]);
     const [selectedTypes, setSelectedTypes] = useState([]);
+    const [lowStockOnly, setLowStockOnly] = useState(false);
 
     const [cart, setCart] = useState(() => {
         try {
@@ -44,10 +45,12 @@ const StockPage = () => {
         );
     };
 
-    const filteredItems =
-        selectedTypes.length === 0
-            ? items
-            : items.filter((item) => selectedTypes.includes(item.type));
+    const filteredItems = items.filter((item) => {
+        const matchesType =
+            selectedTypes.length === 0 || selectedTypes.includes(item.type);
+        const matchesStock = !lowStockOnly || item.quantity < 20;
+        return matchesType && matchesStock;
+    });
 
     const handleAddToCart = (item) => {
         setSelectedItem(item);
@@ -63,10 +66,10 @@ const StockPage = () => {
 
             if (existing) {
                 return prevCart.map((p) =>
-                    p._id === selectedItem._id ? { ...p, quantity: p.quantity + quantity } : p
+                    p._id === selectedItem._id ? {...p, quantity: p.quantity + quantity} : p
                 );
             } else {
-                return [...prevCart, { ...selectedItem, quantity }];
+                return [...prevCart, {...selectedItem, quantity}];
             }
         });
 
@@ -77,7 +80,7 @@ const StockPage = () => {
         setCart((prevCart) =>
             prevCart
                 .map((item) =>
-                    item._id === id ? { ...item, quantity: Math.max(item.quantity + delta, 0) } : item
+                    item._id === id ? {...item, quantity: Math.max(item.quantity + delta, 0)} : item
                 )
                 .filter((item) => item.quantity > 0)
         );
@@ -87,17 +90,17 @@ const StockPage = () => {
 
     return (
         <div>
-            <Navbar />
+            <Navbar/>
 
             <div className="h-20 bg-[#981208] flex items-center pl-[60px] pr-[15px] relative">
-                <div className="flex space-x-[120px]">
+                <div className="flex space-x-[80px]">
                     {[
-                        { label: "Beers", type: "beer" },
-                        { label: "Wines", type: "wine" },
-                        { label: "Strong alcohol", type: "strong" },
-                        { label: "Soft drinks", type: "soft" },
-                        { label: "Stuff", type: "stuff" },
-                    ].map(({ label, type }) => (
+                        {label: "Beers", type: "beer"},
+                        {label: "Wines", type: "wine"},
+                        {label: "Strong alcohol", type: "strong"},
+                        {label: "Soft drinks", type: "soft"},
+                        {label: "Stuff", type: "stuff"},
+                    ].map(({label, type}) => (
                         <label
                             key={type}
                             className="flex items-center space-x-2 text-white text-[17px] font-bold cursor-pointer"
@@ -111,6 +114,15 @@ const StockPage = () => {
                             <span>{label}</span>
                         </label>
                     ))}
+                    <label className="flex items-center space-x-2 text-white text-[17px] font-bold cursor-pointer">
+                        <input
+                            type="checkbox"
+                            checked={lowStockOnly}
+                            onChange={() => setLowStockOnly(!lowStockOnly)}
+                            className="w-5 h-5 accent-white"
+                        />
+                        <span>Low quantity</span>
+                    </label>
                 </div>
 
                 <div className="ml-auto flex items-center gap-4 mr-[60px]">
@@ -126,7 +138,8 @@ const StockPage = () => {
                     >
                         <span className="text-2xl">🛒</span>
                         {cart.length > 0 && (
-                            <span className="absolute -top-1 -right-1 bg-[#981208] text-white text-xs rounded-full px-[6px]">
+                            <span
+                                className="absolute -top-1 -right-1 bg-[#981208] text-white text-xs rounded-full px-[6px]">
                 {cart.length}
               </span>
                         )}
@@ -141,9 +154,10 @@ const StockPage = () => {
                         className="pl-[60px] flex items-center justify-between bg-gray-200 p-4 rounded-md"
                     >
                         <div className="flex items-center gap-4 flex-1 min-w-0">
-                            <div className="w-[80px] h-[80px] bg-white flex items-center justify-center overflow-hidden rounded-md">
+                            <div
+                                className="w-[80px] h-[80px] bg-white flex items-center justify-center overflow-hidden rounded-md">
                                 {item.photo ? (
-                                    <img src={item.photo} alt={item.name} className="object-cover w-full h-full" />
+                                    <img src={item.photo} alt={item.name} className="object-cover w-full h-full"/>
                                 ) : (
                                     <span className="text-gray-500 text-xs">No image</span>
                                 )}
@@ -190,7 +204,8 @@ const StockPage = () => {
                             className="border p-2 rounded-md w-full mb-4"
                         />
                         <div className="flex justify-end space-x-2">
-                            <button onClick={() => setShowQuantityPopup(false)} className="px-4 py-2 bg-gray-300 rounded-md">
+                            <button onClick={() => setShowQuantityPopup(false)}
+                                    className="px-4 py-2 bg-gray-300 rounded-md">
                                 Cancel
                             </button>
                             <button onClick={handleConfirmAdd} className="px-4 py-2 bg-[#981208] text-white rounded-md">
@@ -215,11 +230,13 @@ const StockPage = () => {
                                         <li key={p._id} className="flex justify-between items-center border-b pb-2">
                                             <span className="font-semibold w-[150px] truncate">{p.name}</span>
                                             <div className="flex items-center gap-2">
-                                                <button onClick={() => handleChangeQuantity(p._id, -1)} className="px-2 py-1 bg-gray-300 rounded">
+                                                <button onClick={() => handleChangeQuantity(p._id, -1)}
+                                                        className="px-2 py-1 bg-gray-300 rounded">
                                                     -
                                                 </button>
                                                 <span className="w-[30px] text-center">{p.quantity}</span>
-                                                <button onClick={() => handleChangeQuantity(p._id, 1)} className="px-2 py-1 bg-gray-300 rounded">
+                                                <button onClick={() => handleChangeQuantity(p._id, 1)}
+                                                        className="px-2 py-1 bg-gray-300 rounded">
                                                     +
                                                 </button>
                                             </div>
@@ -228,12 +245,14 @@ const StockPage = () => {
                                     ))}
                                 </ul>
 
-                                <div className="text-right font-bold text-lg border-t pt-3">Total: €{totalPrice.toFixed(2)}</div>
+                                <div className="text-right font-bold text-lg border-t pt-3">Total:
+                                    €{totalPrice.toFixed(2)}</div>
                             </>
                         )}
 
                         <div className="flex justify-end gap-3 mt-4">
-                            <button onClick={() => setShowCartPopup(false)} className="px-4 py-2 bg-gray-300 rounded-md">
+                            <button onClick={() => setShowCartPopup(false)}
+                                    className="px-4 py-2 bg-gray-300 rounded-md">
                                 Close
                             </button>
                             {cart.length > 0 && (
