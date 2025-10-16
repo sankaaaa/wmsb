@@ -6,6 +6,7 @@ const StockPage = () => {
     const [items, setItems] = useState([]);
     const [selectedTypes, setSelectedTypes] = useState([]);
     const [lowStockOnly, setLowStockOnly] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
 
     const [cart, setCart] = useState(() => {
         try {
@@ -49,8 +50,11 @@ const StockPage = () => {
         const matchesType =
             selectedTypes.length === 0 || selectedTypes.includes(item.type);
         const matchesStock = !lowStockOnly || item.quantity < 20;
-        return matchesType && matchesStock;
+        const matchesSearch =
+            item.name.toLowerCase().includes(searchTerm.toLowerCase());
+        return matchesType && matchesStock && matchesSearch;
     });
+
 
     const handleAddToCart = (item) => {
         setSelectedItem(item);
@@ -128,8 +132,10 @@ const StockPage = () => {
                 <div className="ml-auto flex items-center gap-4 mr-[60px]">
                     <input
                         type="text"
-                        placeholder="Search"
-                        className="px-4 py-2 rounded-md text-black text-[16px] focus:outline-none"
+                        placeholder="Search by name..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="px-4 py-2 rounded-md text-black text-[16px] focus:outline-none focus:ring-2 focus:ring-[#ffb3b3] w-[220px]"
                     />
                     <button
                         onClick={() => setShowCartPopup(true)}

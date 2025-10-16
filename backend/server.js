@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const Item = require("./models/Item");
 const Order = require("./models/Order");
+const User = require("./models/User");
 const nodemailer = require("nodemailer");
 const PDFDocument = require("pdfkit");
 const streamBuffers = require("stream-buffers");
@@ -43,6 +44,16 @@ app.post("/api/items", async (req, res) => {
     }
 });
 
+// ====================== USERS ======================
+app.get("/api/users", async (req, res) => {
+    try {
+        const users = await User.find();
+        res.json(users);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({message: "Failed to fetch users"});
+    }
+})
 
 // ====================== ORDERS ======================
 app.get("/api/orders", async (req, res) => {
