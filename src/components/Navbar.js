@@ -8,7 +8,7 @@ const Navbar = () => {
         {path: "/stock", label: "Stock"},
         {path: "/orders", label: "All orders"},
         {path: "/create", label: "Create order"},
-        {path: "/logout", label: "Log out"},
+        {path: "/login", label: "Log out"},
     ];
 
     return (
