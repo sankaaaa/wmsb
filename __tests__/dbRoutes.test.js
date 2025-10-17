@@ -6,7 +6,6 @@ const request = require("supertest");
 const nodemailer = require("nodemailer");
 
 jest.mock("nodemailer");
-
 const sendMailMock = jest.fn().mockResolvedValue({ messageId: "mocked" });
 nodemailer.createTransport.mockReturnValue({ sendMail: sendMailMock });
 
@@ -15,31 +14,21 @@ jest.mock("../backend/models/Order");
 
 const Item = require("../backend/models/Item");
 const Order = require("../backend/models/Order");
-
 const app = require("../backend/app");
 
 describe("---------Database routes (GET & POST)---------", () => {
-    beforeAll(async () => {
-        if (process.env.NODE_ENV !== "test") {
-            await app.connectDB();
-        }
-    });
-
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    // ====================== ITEMS ======================
     test("GET /api/items → returns all items from DB", async () => {
         const mockItems = [
             { _id: "1", name: "Beer", type: "beer", quantity: 10 },
             { _id: "2", name: "Wine", type: "wine", quantity: 5 },
         ];
-
         Item.find.mockResolvedValue(mockItems);
 
         const res = await request(app).get("/api/items").expect(200);
-
         expect(Item.find).toHaveBeenCalledTimes(1);
         expect(res.body).toEqual(mockItems);
     });
@@ -54,23 +43,19 @@ describe("---------Database routes (GET & POST)---------", () => {
         });
 
         const res = await request(app).post("/api/items").send(newItem).expect(200);
-
         expect(Item).toHaveBeenCalledWith(newItem);
         expect(res.body).toEqual(savedItem);
     });
 
-    // ====================== ORDERS ======================
     test("GET /api/orders → returns all orders from DB", async () => {
         const mockOrders = [
             { _id: "a1", customerName: "Alice", totalPrice: 25 },
             { _id: "a2", customerName: "Bob", totalPrice: 40 },
         ];
-
         const sortMock = jest.fn().mockResolvedValue(mockOrders);
         Order.find.mockReturnValue({ sort: sortMock });
 
         const res = await request(app).get("/api/orders").expect(200);
-
         expect(Order.find).toHaveBeenCalledTimes(1);
         expect(sortMock).toHaveBeenCalledWith({ createdAt: -1 });
         expect(res.body).toEqual(mockOrders);
@@ -93,7 +78,6 @@ describe("---------Database routes (GET & POST)---------", () => {
         });
 
         const res = await request(app).post("/api/orders").send(orderData).expect(201);
-
         expect(Order).toHaveBeenCalledWith(orderData);
         expect(res.body).toEqual(savedOrder);
 

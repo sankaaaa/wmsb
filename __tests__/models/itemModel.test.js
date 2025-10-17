@@ -2,7 +2,6 @@ const { TextEncoder, TextDecoder } = require("util");
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
 
-const mongoose = require("mongoose");
 const Item = require("../../backend/models/Item");
 
 describe("Item Model Schema", () => {
