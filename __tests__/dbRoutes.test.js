@@ -1,7 +1,14 @@
-const {TextEncoder, TextDecoder} = require("util");
+const { TextEncoder, TextDecoder } = require("util");
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
+
 const request = require("supertest");
+const nodemailer = require("nodemailer");
+
+jest.mock("nodemailer");
+
+const sendMailMock = jest.fn().mockResolvedValue({ messageId: "mocked" });
+nodemailer.createTransport.mockReturnValue({ sendMail: sendMailMock });
 
 jest.mock("../backend/models/Item");
 jest.mock("../backend/models/Order");
@@ -12,6 +19,12 @@ const Order = require("../backend/models/Order");
 const app = require("../backend/app");
 
 describe("---------Database routes (GET & POST)---------", () => {
+    beforeAll(async () => {
+        if (process.env.NODE_ENV !== "test") {
+            await app.connectDB();
+        }
+    });
+
     beforeEach(() => {
         jest.clearAllMocks();
     });
@@ -19,8 +32,8 @@ describe("---------Database routes (GET & POST)---------", () => {
     // ====================== ITEMS ======================
     test("GET /api/items → returns all items from DB", async () => {
         const mockItems = [
-            {_id: "1", name: "Beer", type: "beer", quantity: 10},
-            {_id: "2", name: "Wine", type: "wine", quantity: 5},
+            { _id: "1", name: "Beer", type: "beer", quantity: 10 },
+            { _id: "2", name: "Wine", type: "wine", quantity: 5 },
         ];
 
         Item.find.mockResolvedValue(mockItems);
@@ -32,8 +45,8 @@ describe("---------Database routes (GET & POST)---------", () => {
     });
 
     test("POST /api/items → saves new item to DB", async () => {
-        const newItem = {name: "Whiskey", type: "strong", quantity: 3};
-        const savedItem = {_id: "99", ...newItem};
+        const newItem = { name: "Whiskey", type: "strong", quantity: 3 };
+        const savedItem = { _id: "99", ...newItem };
 
         Item.mockImplementation(function (data) {
             this._doc = data;
@@ -49,17 +62,17 @@ describe("---------Database routes (GET & POST)---------", () => {
     // ====================== ORDERS ======================
     test("GET /api/orders → returns all orders from DB", async () => {
         const mockOrders = [
-            {_id: "a1", customerName: "Alice", totalPrice: 25},
-            {_id: "a2", customerName: "Bob", totalPrice: 40},
+            { _id: "a1", customerName: "Alice", totalPrice: 25 },
+            { _id: "a2", customerName: "Bob", totalPrice: 40 },
         ];
 
         const sortMock = jest.fn().mockResolvedValue(mockOrders);
-        Order.find.mockReturnValue({sort: sortMock});
+        Order.find.mockReturnValue({ sort: sortMock });
 
         const res = await request(app).get("/api/orders").expect(200);
 
         expect(Order.find).toHaveBeenCalledTimes(1);
-        expect(sortMock).toHaveBeenCalledWith({createdAt: -1});
+        expect(sortMock).toHaveBeenCalledWith({ createdAt: -1 });
         expect(res.body).toEqual(mockOrders);
     });
 
@@ -68,11 +81,11 @@ describe("---------Database routes (GET & POST)---------", () => {
             customerName: "John",
             customerEmail: "john@example.com",
             providerEmail: "provider@example.com",
-            products: [{name: "Beer", quantity: 2, price: 5}],
+            products: [{ name: "Beer", quantity: 2, price: 5 }],
             totalPrice: 10,
             comment: "Quick delivery",
         };
-        const savedOrder = {_id: "ord1", ...orderData};
+        const savedOrder = { _id: "ord1", ...orderData };
 
         Order.mockImplementation(function (data) {
             this._doc = data;
@@ -83,5 +96,14 @@ describe("---------Database routes (GET & POST)---------", () => {
 
         expect(Order).toHaveBeenCalledWith(orderData);
         expect(res.body).toEqual(savedOrder);
+
+        expect(sendMailMock).toHaveBeenCalledTimes(1);
+        expect(sendMailMock).toHaveBeenCalledWith(
+            expect.objectContaining({
+                from: expect.any(String),
+                to: orderData.providerEmail,
+                replyTo: orderData.customerEmail,
+            })
+        );
     });
 });

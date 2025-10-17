@@ -26,7 +26,7 @@ const OrdersPage = () => {
                 <h1 className="text-2xl font-bold mb-6 text-[#981208]">📦 All orders</h1>
 
                 {loading ? (
-                    <p className="text-gray-600">...Loading orders</p>
+                    <p className="text-gray-600">Loading orders...</p>
                 ) : orders.length === 0 ? (
                     <p className="text-gray-600">No orders found</p>
                 ) : (
